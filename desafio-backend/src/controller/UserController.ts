@@ -83,4 +83,27 @@ export class UserController {
             res.status(400).send({ error: error.message });
         }
     }
+
+    // usuários filtrados
+    async filterUsers(req: Request, res: Response) {
+        try {
+            const ativo = req.query.ativo as string
+
+            const user = await new UserBusiness().filterUsers(ativo)
+            res.status(200).send({ user });
+            
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
+
+    // pegando todos os usuários
+    async getUsers(req: Request, res: Response) {
+        try {
+            const users = await new UserBusiness().getUsers()
+            res.status(200).send({users})
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
 }

@@ -10,8 +10,8 @@ export class UserBusiness {
     // criando um novo usuário
     async createUser(user: InputUser) {
         try {
-
-            if (!user.name || !user.email) {
+            console.log(user)
+            if ( !user.name || !user.email) {
                 throw new Error("Please, fill all the fields!")
             }
 
@@ -98,6 +98,17 @@ export class UserBusiness {
             }
 
             return updateUserId
+        } catch (error: any) {
+            throw new Error(error.message || "Error creating user. Please check your system administrator.");
+        }
+    }
+
+    // filtrando usuários ativos
+    async filterUsers(ativo: string) {
+        try {
+            const filterUser = await new UserDataBase().filterUsers(ativo)
+
+            return filterUser
         } catch (error: any) {
             throw new Error(error.message || "Error creating user. Please check your system administrator.");
         }

@@ -1,7 +1,7 @@
 import { BaseDatabase } from "../config/db.config";
 
 export class UserDataBase extends BaseDatabase {
-    private static TABLE_NAME = "easydotsUsers"
+    private static TABLE_NAME = "easydotsusers"
 
     // criando um usuário, inserindo no banco de dados
     public async createUser(id: string, name: string, email: string, password: string, created_at: Date): Promise<void> {
@@ -88,6 +88,18 @@ export class UserDataBase extends BaseDatabase {
                 .select()
                 .where({ id })
             return user
+        } catch (error: any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
+    // filtrar usuários
+    public async filterUsers(ativo: string) {
+        try {
+            await UserDataBase.connection(UserDataBase.TABLE_NAME)
+                .select('*')
+                .where('ativo', 'LIKE', `%${ativo}%`)
+
         } catch (error: any) {
             throw new Error(error.sqlMessage || error.message);
         }

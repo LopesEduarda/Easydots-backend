@@ -13,3 +13,7 @@ app.get('/getuserbyid/:id', userController.getUserById)
 app.delete('/deleteuserbyid/:id', userController.deleteUserById)
 // atualizar usuário por id
 app.put('/updateuser/:id', userController.updateUserbyId)
+// filtrar usuários ativos
+app.get('/getactiveruser', userController.filterUsers)
+// busca por todos os usuários
+app.get('/getallusers', userController.getUsers)
