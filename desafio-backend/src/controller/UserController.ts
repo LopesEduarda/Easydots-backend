@@ -1,6 +1,6 @@
 import { UserDataBase } from './../database/UserDataBase';
 import { UserBusiness } from './../business/UserBusiness';
-import { InputUser } from './../database/models/User';
+import { deletedUsers, InputUser } from './../database/models/User';
 import { Request, Response } from 'express'
 
 export class UserController {
@@ -61,8 +61,12 @@ export class UserController {
     async deleteUserById(req: Request, res: Response) {
         try {
             const id = req.params.id as string
-
+            
+            console.log('olá')
+            // const usersDeleted = await new UserDataBase().deleteUserById(id)
             const user = await new UserBusiness().deleteUserById(id)
+
+
             res.status(200).send({ user });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
@@ -77,7 +81,7 @@ export class UserController {
 
             const user = await new UserBusiness().updateUserById(id, name, email, password)
             const message = `changes made successfully!`
-            
+
             res.status(200).send({ message, user });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
@@ -91,7 +95,7 @@ export class UserController {
 
             const user = await new UserBusiness().filterUsers(ativo)
             res.status(200).send({ user });
-            
+
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }
@@ -101,7 +105,19 @@ export class UserController {
     async getUsers(req: Request, res: Response) {
         try {
             const users = await new UserBusiness().getUsers()
-            res.status(200).send({users})
+            res.status(200).send({ users })
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
+
+    // listando usuários deletados
+    async getDeletedUsers(req: Request, res: Response) {
+        try {
+''
+            const users = await new UserBusiness().deletedUsers()
+            res.status(200).send({ users })
+
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }

@@ -17,3 +17,11 @@ export type InputUser = {
 export type authenticationData = {
     id: string
 }
+
+export type deletedUsers = {
+    id: string,
+    name: string,
+    email: string,
+    password: string,
+    created_at: Date
+}

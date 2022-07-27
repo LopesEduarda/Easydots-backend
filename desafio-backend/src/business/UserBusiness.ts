@@ -1,7 +1,7 @@
 import { UserDataBase } from "../database/UserDataBase";
 import Authenticator from "../services/Authenticator";
 import { HashManager } from "../services/hashManager";
-import { InputUser } from "../database/models/User";
+import { deletedUsers, InputUser } from "../database/models/User";
 import { generateId } from "../services/idGenerator";
 
 
@@ -11,7 +11,7 @@ export class UserBusiness {
     async createUser(user: InputUser) {
         try {
             console.log(user)
-            if ( !user.name || !user.email) {
+            if (!user.name || !user.email) {
                 throw new Error("Please, fill all the fields!")
             }
 
@@ -75,14 +75,17 @@ export class UserBusiness {
         const statusCode = 404;
 
         try {
-            const deleteUserById = await new UserDataBase().deleteUserById(id)
-
             if (!id) {
                 let statusCode = 404
                 throw new Error(`Please, fill in the field user id you want delete! ${statusCode}`)
             }
 
-            return deleteUserById
+
+            const [user] = await new UserDataBase().getUserById(id)
+            console.log(user)
+            await new UserDataBase().insertDeletedUsers(user)
+            await new UserDataBase().deleteUserById(id)
+            return user
         } catch (error: any) {
             throw new Error(error.message || "Error creating user. Please check your system administrator.");
         }
@@ -109,6 +112,18 @@ export class UserBusiness {
             const filterUser = await new UserDataBase().filterUsers(ativo)
 
             return filterUser
+        } catch (error: any) {
+            throw new Error(error.message || "Error creating user. Please check your system administrator.");
+        }
+    }
+
+    // listando úsuários deletados
+    async deletedUsers() {
+        try {
+
+            const deleted_users = await new UserDataBase().deletedUsers()
+            return deleted_users
+
         } catch (error: any) {
             throw new Error(error.message || "Error creating user. Please check your system administrator.");
         }

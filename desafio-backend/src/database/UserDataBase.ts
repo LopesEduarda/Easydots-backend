@@ -1,7 +1,9 @@
 import { BaseDatabase } from "../config/db.config";
+import { deletedUsers } from "./models/User";
 
 export class UserDataBase extends BaseDatabase {
     private static TABLE_NAME = "easydotsusers"
+    private static TABLE_NAME2 = "deleted_users"
 
     // criando um usuário, inserindo no banco de dados
     public async createUser(id: string, name: string, email: string, password: string, created_at: Date): Promise<void> {
@@ -64,11 +66,9 @@ export class UserDataBase extends BaseDatabase {
     // deletar usuário por id
     public async deleteUserById(id: string) {
         try {
-            const users = await UserDataBase.connection(UserDataBase.TABLE_NAME)
+            await UserDataBase.connection(UserDataBase.TABLE_NAME)
                 .delete()
                 .where({ id })
-            return users
-
         } catch (error: any) {
             throw new Error(error.sqlMessage || error.message);
         }
@@ -100,6 +100,30 @@ export class UserDataBase extends BaseDatabase {
                 .select('*')
                 .where('ativo', 'LIKE', `%${ativo}%`)
 
+        } catch (error: any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
+    // inserindo usuários deletados na tabela de usuários deletados
+    async insertDeletedUsers(deletedUsers: deletedUsers) {
+        try {
+            await BaseDatabase.connection()
+                .insert(deletedUsers)
+                .into(UserDataBase.TABLE_NAME2)
+
+        } catch (error: any) {
+            throw new Error(error.message || "Error creating user. Please check your system administrator.");
+        }
+    }
+
+
+    // tabela que criarei para listar os usuários deletados
+    public async deletedUsers() {
+        try {
+            const users = await UserDataBase.connection(UserDataBase.TABLE_NAME2)
+                .select('*')
+            return users
         } catch (error: any) {
             throw new Error(error.sqlMessage || error.message);
         }

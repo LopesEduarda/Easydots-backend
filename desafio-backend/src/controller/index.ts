@@ -17,3 +17,5 @@ app.put('/updateuser/:id', userController.updateUserbyId)
 app.get('/getactiveruser', userController.filterUsers)
 // busca por todos os usuários
 app.get('/getallusers', userController.getUsers)
+// busca por todos os usuários deletados
+app.get('/getalldeletedusers', userController.getDeletedUsers)
