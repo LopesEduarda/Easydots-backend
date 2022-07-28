@@ -74,6 +74,17 @@ export class UserDataBase extends BaseDatabase {
         }
     }
 
+    // deletar usuário por id
+    public async deleteUserById2(id: string) {
+        try {
+            await UserDataBase.connection(UserDataBase.TABLE_NAME2)
+                .delete()
+                .where({ id })
+        } catch (error: any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
     // atualizar usuário por id
     public async updateUser(id: string, name: string, email: string, password: string) {
         try {
@@ -126,6 +137,30 @@ export class UserDataBase extends BaseDatabase {
             return users
         } catch (error: any) {
             throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
+    // restaurando usuários (tirando um usuário da tabela de removidos e retornando esse usuário para a tabela 'normal')
+    public async restoreUser(id: string) {
+        try {
+            const users = await UserDataBase.connection(UserDataBase.TABLE_NAME2)
+                .select('*')
+                .where({ id })
+            return users
+        } catch (error: any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
+    // inserindo um usuário deletado de volta na tabela de usuários 'normais'
+    async insertRestoreUser(deletedUsers: deletedUsers) {
+        try {
+            await BaseDatabase.connection()
+                .insert(deletedUsers)
+                .into(UserDataBase.TABLE_NAME)
+
+        } catch (error: any) {
+            throw new Error(error.message || "Error creating user. Please check your system administrator.");
         }
     }
 

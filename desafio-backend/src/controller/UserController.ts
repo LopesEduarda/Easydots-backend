@@ -61,13 +61,8 @@ export class UserController {
     async deleteUserById(req: Request, res: Response) {
         try {
             const id = req.params.id as string
-            
-            console.log('olá')
-            // const usersDeleted = await new UserDataBase().deleteUserById(id)
             const user = await new UserBusiness().deleteUserById(id)
-
-
-            res.status(200).send({ user });
+            res.status(200).send({ message: 'User successfully deleted!', user });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }
@@ -114,10 +109,26 @@ export class UserController {
     // listando usuários deletados
     async getDeletedUsers(req: Request, res: Response) {
         try {
-''
+            ''
             const users = await new UserBusiness().deletedUsers()
             res.status(200).send({ users })
 
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
+
+    // restaurando usuários (tirando um usuário da tabela de removidos e retornando esse usuário para a tabela 'normal')
+    async restoreUser(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string
+
+            if (!id) {
+                throw new Error('Please, fill the field id!')
+            }
+
+            const user = await new UserBusiness().restoreUsers(id)
+            res.status(200).send({ message: 'User successfully restored!', user })
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }

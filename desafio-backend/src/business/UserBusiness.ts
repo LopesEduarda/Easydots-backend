@@ -72,8 +72,6 @@ export class UserBusiness {
 
     // deletar usuário por id
     async deleteUserById(id: string) {
-        const statusCode = 404;
-
         try {
             if (!id) {
                 let statusCode = 404
@@ -82,7 +80,6 @@ export class UserBusiness {
 
 
             const [user] = await new UserDataBase().getUserById(id)
-            console.log(user)
             await new UserDataBase().insertDeletedUsers(user)
             await new UserDataBase().deleteUserById(id)
             return user
@@ -124,6 +121,21 @@ export class UserBusiness {
             const deleted_users = await new UserDataBase().deletedUsers()
             return deleted_users
 
+        } catch (error: any) {
+            throw new Error(error.message || "Error creating user. Please check your system administrator.");
+        }
+    }
+
+    // restaurando usuários (tirando um usuário da tabela de removidos e retornando esse usuário para a tabela 'normal')
+    async restoreUsers(id: string) {
+        try {
+            // pegando o usuário que desejo restaurar por id
+            const [user] = await new UserDataBase().restoreUser(id)
+            // inserindo esse usuário de volta na tabela de usuários
+            const restoreUser = await new UserDataBase().insertRestoreUser(user)
+            // deletando da tabela de usuários deletados
+            await new UserDataBase().deleteUserById2(id)
+            return restoreUser
         } catch (error: any) {
             throw new Error(error.message || "Error creating user. Please check your system administrator.");
         }

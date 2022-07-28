@@ -19,3 +19,5 @@ app.get('/getactiveruser', userController.filterUsers)
 app.get('/getallusers', userController.getUsers)
 // busca por todos os usuários deletados
 app.get('/getalldeletedusers', userController.getDeletedUsers)
+// restaurando um usuário que foi deletado
+app.patch('/restoreuser/:id', userController.restoreUser)
